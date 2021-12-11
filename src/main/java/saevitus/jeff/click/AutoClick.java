@@ -4,8 +4,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -47,7 +49,9 @@ public class AutoClick {
             Entity ent = ((EntityHitResult)trace).getEntity();
             friendly = ent instanceof VillagerEntity
                     || ent instanceof TameableEntity
-                    || ent instanceof PlayerEntity;
+                    || ent instanceof PlayerEntity
+                    || ent instanceof IronGolemEntity
+                    || ent instanceof WanderingTraderEntity;
 
             return ent instanceof LivingEntity && !friendly;
         }
