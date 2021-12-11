@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "jeffclick",
+  "version": "${version}",
+
+  "name": "JEFF autoclicker",
+  "description": "it clicks",
+  "authors": [
+    "Jeff(saevitus)"
+  ],
+  "contact": {
+    "homepage": "https://Saevit.us/",
+    "sources": "https://github.com/Saevitus/"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/jeffclick/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "saevitus.jeff.click.JeffClick"
+    ]
+  },
+  "mixins": [
+    "jeffclick.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
