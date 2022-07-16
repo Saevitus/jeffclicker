@@ -56,7 +56,7 @@ public class JeffClick implements ModInitializer {
 	private void renderOverlayEvent(MatrixStack matrix, float delta) {
 		if(!click.isActive() || !this.isActive) return;
 
-		Text test = new LiteralText("AUTOCLICKER ACTIVE");
+		Text test = Text.literal("AUTOCLICKER ACTIVE");
 
 		int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(test);
 		int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (textWidth / 2);

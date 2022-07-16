@@ -72,7 +72,7 @@ public class AutoEat {
     private void StopEating() {
         if (!IsEating()) return;
 
-        this.c.options.keyUse.setPressed(false);
+        this.c.options.useKey.setPressed(false);
 
         this.c.player.getInventory().selectedSlot = oldSlot;
         this.oldSlot = -1;
@@ -101,8 +101,8 @@ public class AutoEat {
         this.c.player.getInventory().selectedSlot = bestSlot;
 
         // eat food
-        this.c.options.keyUse.setPressed(true);
-        this.c.interactionManager.interactItem(c.player, c.world, Hand.MAIN_HAND);
+        this.c.options.useKey.setPressed(true);
+        this.c.interactionManager.interactItem(c.player, Hand.MAIN_HAND);
 
     }
 }
