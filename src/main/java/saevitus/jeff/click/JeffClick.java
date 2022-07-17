@@ -1,11 +1,14 @@
 package saevitus.jeff.click;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.Font;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.*;
 import org.apache.logging.log4j.LogManager;
@@ -39,44 +42,44 @@ public class JeffClick implements ModInitializer {
 			this.isClickActive = !this.isClickActive;
 
 			click.setActive(this.isClickActive);
-			if (!this.isClickActive) {
-				click.getKey().setPressed(false);
-			}
+			click.getKey().setPressed(this.isClickActive);
 		}
 
 		while (this.autoEatKey.wasPressed()) {
 			this.isEatActive = !this.isEatActive;
 
 			eat.setActive(this.isEatActive);
-			if (!this.isEatActive) {
-				eat.getKey().setPressed(false);
-			}
+			eat.getKey().setPressed(this.isEatActive);
 		}
 
-		if (this.isClickActive) if(click.isActive()) click.doAutoClick(c);
-		if (this.isEatActive) if(eat.isActive()) eat.init(c);
+		if (this.isClickActive && click.isActive())  click.doAutoClick(c);
+		if (this.isEatActive && eat.isActive())  eat.init(c);
 	}
 
 	private void renderOverlayEvent(MatrixStack matrix, float delta) {
 		Text autoClickText = Text.literal("AUTOCLICKER ACTIVE");
 		Text autoEatText = Text.literal("AUTOEAT ACTIVE");
 
-		int clickWidth = MinecraftClient.getInstance().textRenderer.getWidth(autoClickText);
-		int eatWidth = MinecraftClient.getInstance().textRenderer.getWidth(autoEatText);
+		TextRenderer tr = MinecraftClient.getInstance().textRenderer;
+
+		int clickWidth = tr.getWidth(autoClickText);
+		int eatWidth = tr.getWidth(autoEatText);
 		int y = 10;
 
 		if (this.isClickActive && click.isActive()) {
+			//matrix.scale(1.5F, 1.5F, 1.5F); // lol
+
 			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (clickWidth / 2);
-			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, autoClickText, x, y, 0xFF0000);
+			tr.drawWithShadow(matrix, autoClickText, x, y, 0xFF0000);
 		}
 
 		if (this.isEatActive && eat.isActive()) {
 
 			if (click.isActive())
-				y += 14;
+				y += tr.fontHeight + 4;
 
 			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (eatWidth / 2);
-			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, autoEatText, x, y, 0x00FF00);
+			tr.drawWithShadow(matrix, autoEatText, x, y, 0x00FF00);
 		}
 	}
 
