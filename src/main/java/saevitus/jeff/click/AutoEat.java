@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -14,10 +15,23 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.option.KeyBinding;
 
 public class AutoEat {
     private static MinecraftClient c = null;
     private int oldSlot = -1;
+
+    private final KeyBinding key;
+    private boolean active;
+
+    public AutoEat(KeyBinding key) {
+        this.key = key;
+    }
+
+    public KeyBinding getKey() { return this.key; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean a) { this.active = a; }
 
     public void init(MinecraftClient c) {
         this.c = c;
@@ -79,6 +93,8 @@ public class AutoEat {
     }
 
     public void OnTick() {
+        if (!this.isActive()) return;
+
         if (this.c.player.getAbilities().creativeMode
                 || !this.c.player.canConsume(false)
                 || IsClickable(this.c.crosshairTarget)) {

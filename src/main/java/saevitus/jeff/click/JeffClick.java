@@ -20,54 +20,70 @@ public class JeffClick implements ModInitializer {
 	// initialize everything
 	private static AutoClick click;
 	private static AutoEat eat;
-	private boolean isActive = false;
-	final KeyBinding key = new KeyBinding("JEFFFFFFF", GLFW.GLFW_KEY_UP, "JEFFCLICK (NWORD)");
+	private boolean isClickActive = false;
+	private boolean isEatActive = false;
+	final KeyBinding autoClickKey = new KeyBinding("Autoclick", GLFW.GLFW_KEY_UP, "JEFFCLICK (NWORD)");
+	final KeyBinding autoEatKey = new KeyBinding("Autoeat", GLFW.GLFW_KEY_DOWN, "JEFFCLICK (NWORD)");
 
 
 	private void clientStartedEvent(MinecraftClient c) {
-		click = new AutoClick(key);
-		eat =  new AutoEat();
+		click = new AutoClick(autoClickKey);
+		eat =  new AutoEat(autoEatKey);
 	}
 
 	private void clientTickEvent(MinecraftClient c) {
 		assert c.player != null;
 		if (c.world == null) return;
 
-		while (this.key.wasPressed()) {
-			this.isActive = !this.isActive;
-			System.out.println("pressed");
-			System.out.println("isActive state: " + this.isActive);
+		while (this.autoClickKey.wasPressed()) {
+			this.isClickActive = !this.isClickActive;
 
-			click.setActive(this.isActive);
-
-			if (!this.isActive) {
+			click.setActive(this.isClickActive);
+			if (!this.isClickActive) {
 				click.getKey().setPressed(false);
 			}
 		}
 
-		if (this.isActive) {
-			if(click.isActive()) {
-				click.doAutoClick(c);
-				eat.init(c);
+		while (this.autoEatKey.wasPressed()) {
+			this.isEatActive = !this.isEatActive;
+
+			eat.setActive(this.isEatActive);
+			if (!this.isEatActive) {
+				eat.getKey().setPressed(false);
 			}
 		}
+
+		if (this.isClickActive) if(click.isActive()) click.doAutoClick(c);
+		if (this.isEatActive) if(eat.isActive()) eat.init(c);
 	}
 
 	private void renderOverlayEvent(MatrixStack matrix, float delta) {
-		if(!click.isActive() || !this.isActive) return;
+		Text autoClickText = Text.literal("AUTOCLICKER ACTIVE");
+		Text autoEatText = Text.literal("AUTOEAT ACTIVE");
 
-		Text test = Text.literal("AUTOCLICKER ACTIVE");
-
-		int textWidth = MinecraftClient.getInstance().textRenderer.getWidth(test);
-		int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (textWidth / 2);
+		int clickWidth = MinecraftClient.getInstance().textRenderer.getWidth(autoClickText);
+		int eatWidth = MinecraftClient.getInstance().textRenderer.getWidth(autoEatText);
 		int y = 10;
 
-		MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, test, x, y, 0xFF0000);
+		if (this.isClickActive && click.isActive()) {
+			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (clickWidth / 2);
+			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, autoClickText, x, y, 0xFF0000);
+		}
+
+		if (this.isEatActive && eat.isActive()) {
+
+			if (click.isActive())
+				y += 14;
+
+			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (eatWidth / 2);
+			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, autoEatText, x, y, 0x00FF00);
+		}
 	}
 
 	@Override
 	public void onInitialize() {
-		KeyBindingHelper.registerKeyBinding(this.key);
+		KeyBindingHelper.registerKeyBinding(this.autoClickKey);
+		KeyBindingHelper.registerKeyBinding(this.autoEatKey);
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::clientStartedEvent);
 		ClientTickEvents.END_CLIENT_TICK.register(this::clientTickEvent);
