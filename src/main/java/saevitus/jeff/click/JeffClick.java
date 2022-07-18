@@ -66,21 +66,23 @@ public class JeffClick implements ModInitializer {
 		int eatWidth = tr.getWidth(autoEatText);
 		int y = 10;
 
-		if (this.isClickActive && click.isActive()) {
-			//matrix.scale(1.5F, 1.5F, 1.5F); // lol
+		matrix.push();
+		matrix.scale(0.5F, 0.5F, 0.5F); // lol
+		matrix.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2, 0, 0);
 
-			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (clickWidth / 2);
+		if (this.isClickActive && click.isActive()) {
+			float x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (clickWidth / 2);
 			tr.drawWithShadow(matrix, autoClickText, x, y, 0xFF0000);
 		}
 
 		if (this.isEatActive && eat.isActive()) {
+			if (click.isActive()) y += 14;
 
-			if (click.isActive())
-				y += tr.fontHeight + 4;
-
-			int x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (eatWidth / 2);
+			float x = (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (eatWidth / 2);
 			tr.drawWithShadow(matrix, autoEatText, x, y, 0x00FF00);
 		}
+
+		matrix.pop();
 	}
 
 	@Override
