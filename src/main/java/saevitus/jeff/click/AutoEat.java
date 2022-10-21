@@ -40,8 +40,8 @@ public class AutoEat {
     }
 
     private int GetBestSlot() {
-        int bestSlot = -1;
-        FoodComponent bestFood = null;
+        int slot = -1;
+        float largestSat = -1;
 
         for (int i = 0; i < 9; i++) {
             Item item = this.c.player.getInventory().getStack(i).getItem();
@@ -51,13 +51,15 @@ public class AutoEat {
 
             FoodComponent food = item.getFoodComponent();
 
-            if (bestFood == null) {
-                bestFood = food;
-                bestSlot = i;
+            float sat = food.getSaturationModifier();
+
+            if (sat > largestSat) {
+                largestSat = sat;
+                slot = i;
             }
         }
 
-        return bestSlot;
+        return slot;
     }
 
     boolean IsClickable(HitResult hr) {
@@ -103,8 +105,7 @@ public class AutoEat {
         }
 
         int bestSlot = GetBestSlot();
-        if (bestSlot == -1)
-        {
+        if (bestSlot == -1) {
             StopEating();
             return;
         }
